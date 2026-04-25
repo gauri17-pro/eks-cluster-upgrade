@@ -24,11 +24,9 @@ A step-by-step guide to safely upgrading an Amazon EKS cluster, including the co
 Before starting the upgrade, ensure you have the following in place:
 
 - **AWS CLI** v2.x installed and configured
+  https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 - **kubectl** matching the target Kubernetes version (±1 minor version)
 - **eksctl** (latest version) — optional but recommended
-- IAM permissions: `eks:UpdateClusterVersion`, `eks:UpdateNodegroupVersion`, `ec2:*`, `autoscaling:*`
-- A recent **etcd/cluster backup** or Velero snapshot
-- Access to the AWS Console or CloudWatch for monitoring
 
 ### Tool Version Check
 
@@ -44,7 +42,7 @@ helm version
 ## Upgrade Strategy Overview
 
 > ⚠️ **EKS supports upgrading only one minor version at a time.**  
-> For example: `1.27 → 1.28 → 1.29`. You cannot skip versions.
+> For example: `1.33 → 1.34 → 1.35`. You cannot skip versions.
 
 **Upgrade order (always follow this sequence):**
 
@@ -77,12 +75,6 @@ kubectl get all --all-namespaces -o yaml | grep "apiVersion"
 
 # Or use a dedicated tool
 kubectl convert --help   # requires kubectl-convert plugin
-```
-
-Alternatively, use [pluto](https://github.com/FairwindsOps/pluto):
-
-```bash
-pluto detect-all-in-cluster
 ```
 
 ### 1.4 Check Add-on Compatibility
