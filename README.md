@@ -37,6 +37,12 @@ eksctl version
 helm version
 ```
 
+## Create an EKS Cluster
+
+```bash
+eks create cluster --name my-cluster --version 1.34 --region ap-south-1 --nodegroup-name my-ng-1 --node-type t2.medium --nodes 2 
+```
+
 ---
 
 ## Upgrade Strategy Overview
@@ -71,10 +77,7 @@ aws eks describe-cluster --name <cluster-name> --query "cluster.version" --outpu
 Use `kubectl` to detect usage of deprecated APIs in your workloads:
 
 ```bash
-kubectl get all --all-namespaces -o yaml | grep "apiVersion"
-
-# Or use a dedicated tool
-kubectl convert --help   # requires kubectl-convert plugin
+kubectl get all --all-namespaces -o yaml | grep "apiVersion
 ```
 
 ### 1.4 Check Add-on Compatibility
@@ -85,15 +88,8 @@ aws eks describe-addon-versions --kubernetes-version <target-version>
 
 Verify that all your installed add-ons (CoreDNS, kube-proxy, VPC CNI, etc.) have versions compatible with the target Kubernetes version.
 
-### 1.5 Check Node Group AMI Compatibility
 
-```bash
-aws eks describe-nodegroup --cluster-name <cluster-name> --nodegroup-name <nodegroup-name>
-```
-
-Confirm the current AMI release version and check if a new EKS-optimized AMI is available for the target version.
-
-### 1.6 Backup Critical Resources
+### 1.5 Backup Critical Resources
 
 ```bash
 # Export all namespace resources
@@ -103,7 +99,7 @@ kubectl get all --all-namespaces -o yaml > cluster-backup-$(date +%F).yaml
 kubectl get configmap,secret --all-namespaces -o yaml >> cluster-backup-$(date +%F).yaml
 ```
 
-### 1.7 Notify Stakeholders
+### 1.6 Notify Stakeholders
 
 Communicate a maintenance window to all relevant teams. Cluster upgrades may cause brief API server unavailability (typically < 5 minutes).
 
