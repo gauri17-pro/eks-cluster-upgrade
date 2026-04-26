@@ -86,6 +86,11 @@ kubectl get all --all-namespaces -o yaml | grep "apiVersion
 aws eks describe-addon-versions --kubernetes-version <target-version>
 ```
 
+```
+aws eks describe-addon-versions --kubernetes-version 1.35 --addon-name coredns \
+  --query 'addons[].addonVersions[?addonVersion==`v1.12.4-eksbuild.10`].{Version:addonVersion,Compatibilities:compatibilities}'
+```
+
 Verify that all your installed add-ons (CoreDNS, kube-proxy, VPC CNI, etc.) have versions compatible with the target Kubernetes version.
 
 
