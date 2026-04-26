@@ -115,14 +115,14 @@ The control plane (API server, scheduler, controller manager) is managed by AWS 
 
 ```bash
 aws eks update-cluster-version \
-  --name <cluster-name> \
-  --kubernetes-version <target-version>
+  --name my-cluster \
+  --kubernetes-version 1.35
 ```
 
 **Via eksctl:**
 
 ```bash
-eksctl upgrade cluster --name <cluster-name> --version <target-version> --approve
+eksctl upgrade cluster --name my-cluster --region ap-south-1 --version 1.35 --approve
 ```
 
 **Via AWS Console:**
@@ -134,14 +134,14 @@ eksctl upgrade cluster --name <cluster-name> --version <target-version> --approv
 ### 2.2 Monitor the Upgrade
 
 ```bash
-aws eks describe-cluster --name <cluster-name> --query "cluster.status"
+aws eks describe-cluster --name my-cluster --query "cluster.status"
 # Expected output: "UPDATING" → "ACTIVE"
 ```
 
 Or watch via eksctl:
 
 ```bash
-eksctl utils describe-stacks --region <region> --cluster <cluster-name>
+eksctl utils describe-stacks --region ap-south-1 --cluster my-cluster
 ```
 
 > ⏱️ Control plane upgrades typically take **10–25 minutes**.
@@ -162,7 +162,7 @@ After the control plane is upgraded, update the managed add-ons. Always upgrade 
 ### 3.1 List Installed Add-ons
 
 ```bash
-aws eks list-addons --cluster-name <cluster-name>
+aws eks list-addons --cluster-name my-cluster
 ```
 
 ### 3.2 Check Available Add-on Versions
@@ -181,41 +181,25 @@ Upgrade the following add-ons in this order:
 #### VPC CNI (aws-node)
 
 ```bash
-aws eks update-addon \
-  --cluster-name <cluster-name> \
-  --addon-name vpc-cni \
-  --addon-version <latest-compatible-version> \
-  --resolve-conflicts OVERWRITE
+ekctl update addon --cluter my-cluster --region ap-south-1 --name kube-proxy --force
 ```
 
 #### CoreDNS
 
 ```bash
-aws eks update-addon \
-  --cluster-name <cluster-name> \
-  --addon-name coredns \
-  --addon-version <latest-compatible-version> \
-  --resolve-conflicts OVERWRITE
+eksctl update addon --cluster my-cluster --region ap-south-1 --name coredns --force 
 ```
 
 #### kube-proxy
 
 ```bash
-aws eks update-addon \
-  --cluster-name <cluster-name> \
-  --addon-name kube-proxy \
-  --addon-version <latest-compatible-version> \
-  --resolve-conflicts OVERWRITE
+eksctl update addon --cluster my-cluster --region ap-south-1 --name vpc-cni --force 
 ```
 
-#### EBS CSI Driver (if installed)
+#### Metrics server
 
 ```bash
-aws eks update-addon \
-  --cluster-name <cluster-name> \
-  --addon-name aws-ebs-csi-driver \
-  --addon-version <latest-compatible-version> \
-  --resolve-conflicts OVERWRITE
+eksctl update addon --cluster my-cluster --region ap-south-1 --name metric-server --force 
 ```
 
 ### 3.4 Monitor Add-on Status
@@ -247,7 +231,7 @@ aws eks describe-nodegroup \
 
 ```bash
 aws ssm get-parameter \
-  --name /aws/service/eks/optimized-ami/<target-version>/amazon-linux-2/recommended/release_version \
+  --name /aws/service/eks/optimized-ami/1.35/amazon-linux-2/recommended/release_version \
   --query "Parameter.Value" \
   --output text
 ```
@@ -258,8 +242,8 @@ aws ssm get-parameter \
 
 ```bash
 aws eks update-nodegroup-version \
-  --cluster-name <cluster-name> \
-  --nodegroup-name <nodegroup-name> \
+  --cluster-name my-cluster \
+  --nodegroup-name my-ng-1 \
   --release-version <ami-release-version>
 ```
 
@@ -267,9 +251,9 @@ aws eks update-nodegroup-version \
 
 ```bash
 eksctl upgrade nodegroup \
-  --name <nodegroup-name> \
-  --cluster <cluster-name> \
-  --kubernetes-version <target-version>
+  --name my-ng-1 \
+  --cluster my-cluster \
+  --kubernetes-version 1.35
 ```
 
 ### 4.4 Monitor Node Group Upgrade
