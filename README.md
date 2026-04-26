@@ -186,25 +186,41 @@ Upgrade the following add-ons in this order:
 #### VPC CNI (aws-node)
 
 ```bash
-ekctl update addon --cluter my-cluster --region ap-south-1 --name kube-proxy --force
+eksctl update addon \
+  --cluster my-cluster \
+  --name vpc-cni \
+  --version v1.21.1-eksbuild.7 \
+  --force
 ```
 
 #### CoreDNS
 
 ```bash
-eksctl update addon --cluster my-cluster --region ap-south-1 --name coredns --force 
+eksctl update addon \
+  --cluster my-cluster \
+  --name vpc-cni \
+  --version v1.14.2-eksbuild.4 \
+  --force 
 ```
 
 #### kube-proxy
 
 ```bash
-eksctl update addon --cluster my-cluster --region ap-south-1 --name vpc-cni --force 
+eksctl update addon \
+  --cluster my-cluster \
+  --name vpc-cni \
+  --version v1.35.3-eksbuild.5 \
+  --force 
 ```
 
 #### Metrics server
 
 ```bash
-eksctl update addon --cluster my-cluster --region ap-south-1 --name metric-server --force 
+eksctl update addon \
+  --cluster my-cluster \
+  --name vpc-cni \
+  --version v0.8.1-eksbuild.6 \
+  --force
 ```
 
 ### 3.4 Monitor Add-on Status
