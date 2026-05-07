@@ -39,8 +39,15 @@ helm version
 
 ## Create an EKS Cluster
 
+- Install EKSCTL
+
+```
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+```
+
 ```bash
-eks create cluster --name my-cluster --version 1.34 --region ap-south-1 --nodegroup-name my-ng-1 --node-type t2.medium --nodes 2 
+eksctl create cluster --name my-cluster --version 1.34 --region ap-south-1 --nodegroup-name my-ng-1 --node-type t2.medium --nodes 2 
 ```
 
 ---
