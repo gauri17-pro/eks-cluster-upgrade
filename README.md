@@ -46,6 +46,8 @@ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/d
 sudo mv /tmp/eksctl /usr/local/bin
 ```
 
+- Create an EKS Cluster
+
 ```bash
 eksctl create cluster --name my-cluster --version 1.34 --region ap-south-1 --nodegroup-name my-ng-1 --node-type t2.medium --nodes 2 
 ```
