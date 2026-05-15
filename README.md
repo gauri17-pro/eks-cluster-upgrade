@@ -113,6 +113,72 @@ kubectl get all --all-namespaces -o yaml > cluster-backup-$(date +%F).yaml
 kubectl get configmap,secret --all-namespaces -o yaml >> cluster-backup-$(date +%F).yaml
 ```
 
+Backup list for the production grade cluster:
+
+1. Kubernetes Resources *(via Velero)*
+
+- All namespaces and namespace-scoped resources
+- Deployments, StatefulSets, DaemonSets, ReplicaSets
+- Services, Ingresses, NetworkPolicies
+- ConfigMaps and Secrets
+- PersistentVolumes and PersistentVolumeClaims
+- RBAC — Roles, ClusterRoles, RoleBindings, ClusterRoleBindings
+- ServiceAccounts and IRSA annotations
+- HPA, VPA, PodDisruptionBudgets
+- CRD definitions and all Custom Resource instances
+- CronJobs, Jobs
+- StorageClasses and VolumeSnapshotClasses
+
+---
+
+2. AWS Infrastructure *(via Terraform / IaC State)*
+
+- EKS cluster configuration (version, networking, logging settings)
+- Node group configs (instance type, AMI ID, min/max/desired capacity)
+- Launch Templates and their versions
+- IAM Roles and Policies (especially IRSA roles)
+- VPC, Subnets, Route Tables, Security Groups
+- ALB/NLB listener rules, target groups, SSL certificates
+- ECR image repositories and images
+
+---
+
+3. EKS Specific *(Manual Export)*
+
+- `aws-auth` ConfigMap (IAM to RBAC mappings)
+- EKS managed add-on names and their exact versions (CoreDNS, kube-proxy, VPC CNI, EBS CSI)
+- Cluster Autoscaler / Karpenter NodePool configurations
+- Kubeconfig file
+
+---
+
+4. Storage & Data *(App-level)*
+
+- EBS volume snapshots for all attached volumes
+- Database dumps — `pg_dump`, `mysqldump`, `mongodump` before upgrade
+- Redis RDB/AOF persistence backup
+- Any in-cluster object storage data
+
+---
+
+5. Helm & GitOps
+
+- Helm release list with chart versions (`helm list -A`)
+- Values for every Helm release (`helm get values`)
+- ArgoCD Application CRs and project configs
+- Flux Kustomization and HelmRelease objects
+- Confirm Git repo is up to date (source of truth)
+
+---
+
+6. Observability & Add-ons
+
+- Prometheus rules and alerting configs
+- Grafana dashboards (export as JSON)
+- Fluentd/FluentBit ConfigMaps for log routing
+- Cert-manager certificates and cluster issuers
+- External-DNS configurations
+
 ### 1.6 Notify Stakeholders
 
 Communicate a maintenance window to all relevant teams. Cluster upgrades may cause brief API server unavailability (typically < 5 minutes).
