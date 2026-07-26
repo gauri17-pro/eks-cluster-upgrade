@@ -1,7 +1,7 @@
 # EKS Cluster Upgrade Guide
 
 A step-by-step guide to safely upgrading an Amazon EKS cluster, including the control plane, managed node groups, self-managed nodes, and add-ons.
-
+ 
 ---
 
 ## Table of Contents
